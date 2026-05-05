@@ -9,7 +9,6 @@ import {
   MAX_OTP_ATTEMPTS,
 } from "../utils/otp.js";
 
-
 const SendOTPEmail = async (email, otp) => {
   try {
     await transporter.sendMail({
@@ -28,6 +27,12 @@ const createUserwithOTP = async (data, role) => {
   const { name, email, password, phone } = data;
 
   const emailNormalized = email.toLowerCase().trim();
+
+  const existingUser = await User.findOne({ email: emailNormalized });
+
+  if (existingUser) {
+  throw new Error("Email already registered");
+}
 
   const user = await User.create({
     name,
@@ -55,14 +60,21 @@ const createUserwithOTP = async (data, role) => {
 export const signup = async (req, res) => {
   try {
     const user = await createUserwithOTP(req.body, "user");
+
     res.status(201).json({
       success: true,
-      message:
-        "Signup successful. Please check your email for the OTP to verify your account.",
+      message: "Signup successful. Please verify your email.",
       email: user.email,
     });
+
   } catch (error) {
     console.error("Signup error:", error);
+
+    // ✅ handle duplicate nicely
+    if (error.message === "Email already registered") {
+      return res.status(400).json({ message: error.message });
+    }
+
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -179,7 +191,7 @@ export const verifyOtp = async (req, res) => {
 
     await user.save();
 
-    const token = generateToken(user._id,user.role);
+    const token = generateToken(user._id, user.role);
     res.status(200).json({
       success: true,
       message: "Account verified successfully",
@@ -208,7 +220,7 @@ export const login = async (req, res) => {
     if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
-    const token = generateToken(user._id,user.role);
+    const token = generateToken(user._id, user.role);
     res.status(200).json({
       success: true,
       message: "Login successful",
@@ -235,12 +247,10 @@ export const forgotPassword = async (req, res) => {
     const user = await User.findOne({ email: emailNormalized });
 
     if (!user) {
-      return res
-        .status(200)
-        .json({
-          message:
-            "If an account with that email exists, a password reset link has been sent.",
-        });
+      return res.status(200).json({
+        message:
+          "If an account with that email exists, a password reset link has been sent.",
+      });
     }
 
     // Generate reset token
