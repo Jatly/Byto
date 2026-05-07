@@ -1,10 +1,132 @@
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { login } from "../api/authApi";
 
 const Login = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-export default Login
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!form.email || !form.password) {
+      setError("Please fill in all fields");
+      setLoading(false);
+      return;
+    }
+
+    const cleanedForm = {
+      email: form.email.trim().toLowerCase(),
+      password: form.password,
+    };
+    try {
+      const res = await login(cleanedForm);
+      const { token, user } = res;
+      localStorage.setItem("token", token);
+
+      //  Role-based navigation
+
+      if (user.role === "branch") {
+        navigate("/branch/dashboard");
+      } else if (user.role === "delivery") {
+        navigate("/delivery/dashboard");
+      } else {
+        navigate("/dashboard"); // user
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#121212]">
+      <div className="bg-[#1e1e1e] p-8 rounded-2xl shadow-xl w-[350px]">
+        <h2 className="text-white text-2xl font-bold text-center mb-6">
+          Login to Byto
+        </h2>
+
+        {error && (
+          <p className="text-red-400 text-sm mb-4 text-center">{error}</p>
+        )}
+
+        <form onSubmit={handleLogin}>
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            className="input"
+            onChange={handleChange}
+            disabled={loading}
+            required
+          />
+
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            className="input mb-2"
+            onChange={handleChange}
+            disabled={loading}
+            required
+          />
+
+          {/* Forgot password */}
+          <div className="text-right mb-4">
+            <Link
+              to="/forgot"
+              className="text-sm text-orange-400 hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-orange-500 hover:bg-orange-600 transition text-white py-3 rounded-lg font-semibold"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        {/* Signup links */}
+        <p className="text-gray-400 text-sm mt-5 text-center">
+          Don’t have an account?
+        </p>
+
+        <div className="flex justify-center gap-4 mt-2 text-sm">
+          <Link to="/signup" className="text-orange-400 hover:underline">
+            User
+          </Link>
+          <Link to="/signup-branch" className="text-orange-400 hover:underline">
+            Kitchen
+          </Link>
+          <Link
+            to="/signup-delivery"
+            className="text-orange-400 hover:underline"
+          >
+            Delivery
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
