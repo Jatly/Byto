@@ -4,6 +4,8 @@ import Login from "./pages/Login";
 import VerifyOtp from "./pages/VerifyOtp";
 import SignupBranch from "./pages/SignupBranch";
 import SignupDelivery from "./pages/SignupDelivery";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 // 🔐 Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -23,7 +25,8 @@ const App = () => {
       <Route path="/verify-otp" element={<VerifyOtp/>} />
       <Route path="/signup-branch" element={<SignupBranch />} />
       <Route path="/signup-delivery" element={<SignupDelivery />} />
-
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
 
       {/* Protected Routes */}
       <Route

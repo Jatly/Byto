@@ -265,7 +265,7 @@ export const forgotPassword = async (req, res) => {
     await user.save();
 
     //reset link
-    const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+    const resetUrl = `http://localhost:5000/reset-password/${resetToken}`;
 
     await transporter.sendMail({
       to: user.email,
@@ -287,7 +287,7 @@ export const forgotPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   try {
-    const { token } = req.parms;
+    const { token } = req.params;
     const { password } = req.body;
 
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
