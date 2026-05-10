@@ -31,8 +31,8 @@ const createUserwithOTP = async (data, role) => {
   const existingUser = await User.findOne({ email: emailNormalized });
 
   if (existingUser) {
-  throw new Error("Email already registered");
-}
+    throw new Error("Email already registered");
+  }
 
   const user = await User.create({
     name,
@@ -66,7 +66,6 @@ export const signup = async (req, res) => {
       message: "Signup successful. Please verify your email.",
       email: user.email,
     });
-
   } catch (error) {
     console.error("Signup error:", error);
 
@@ -265,7 +264,7 @@ export const forgotPassword = async (req, res) => {
     await user.save();
 
     //reset link
-    const resetUrl = `http://localhost:5000/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
     await transporter.sendMail({
       to: user.email,
