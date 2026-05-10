@@ -31,7 +31,24 @@ const createUserwithOTP = async (data, role) => {
   const existingUser = await User.findOne({ email: emailNormalized });
 
   if (existingUser) {
-    throw new Error("Email already registered");
+    //  restore deleted account
+    if (existingUser.isDeleted) {
+      existingUser.isDeleted = false;
+      existingUser.password = password;
+      existingUser.name = name;
+      existingUser.phone = phone;
+
+      await existingUser.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Account restored successfully",
+      });
+    }
+
+    return res.status(400).json({
+      message: "Account already exists. Please login.",
+    });
   }
 
   const user = await User.create({
@@ -218,6 +235,11 @@ export const login = async (req, res) => {
     );
     if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ message: "Invalid email or password" });
+    }
+    if (user.isDeleted) {
+      return res.status(403).json({
+        message: "Account no longer exists",
+      });
     }
     const token = generateToken(user._id, user.role);
     res.status(200).json({
