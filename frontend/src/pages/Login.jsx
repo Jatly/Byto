@@ -45,7 +45,7 @@ const Login = () => {
       } else if (user.role === "delivery") {
         navigate("/delivery/dashboard");
       } else {
-        navigate("/dashboard"); // user
+        navigate("/profile"); // user
       }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
@@ -57,12 +57,12 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#121212]">
       <div className="bg-[#1e1e1e] p-8 rounded-2xl shadow-xl w-[350px]">
-        <h2 className="text-white text-2xl font-bold text-center mb-6">
+        <h2 className="mb-6 text-2xl font-bold text-center text-white">
           Login to Byto
         </h2>
 
         {error && (
-          <p className="text-red-400 text-sm mb-4 text-center">{error}</p>
+          <p className="mb-4 text-sm text-center text-red-400">{error}</p>
         )}
 
         <form onSubmit={handleLogin}>
@@ -80,14 +80,14 @@ const Login = () => {
             name="password"
             type="password"
             placeholder="Password"
-            className="input mb-2"
+            className="mb-2 input"
             onChange={handleChange}
             disabled={loading}
             required
           />
 
           {/* Forgot password */}
-          <div className="text-right mb-4">
+          <div className="mb-4 text-right">
             <Link
               to="/forgot"
               className="text-sm text-orange-400 hover:underline"
@@ -99,14 +99,14 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-500 hover:bg-orange-600 transition text-white py-3 rounded-lg font-semibold"
+            className="w-full py-3 font-semibold text-white transition bg-orange-500 rounded-lg hover:bg-orange-600"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
         {/* Signup links */}
-        <p className="text-gray-400 text-sm mt-5 text-center">
+        <p className="mt-5 text-sm text-center text-gray-400">
           Don’t have an account?
         </p>
 
