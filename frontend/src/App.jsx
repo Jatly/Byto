@@ -1,12 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
-import VerifyOtp from "./pages/VerifyOtp";
-import SignupBranch from "./pages/SignupBranch";
-import SignupDelivery from "./pages/SignupDelivery";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import Profile from "./pages/Profile";
+import Signup from "./pages/auth/Signup";
+import Login from "./pages/auth/Login";
+import VerifyOtp from "./pages/auth/VerifyOtp";
+import SignupBranch from "./pages/auth/SignupBranch";
+import SignupDelivery from "./pages/auth/SignupDelivery";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
+import Profile from "./pages/profile/Profile";
+import CreateBrand from "./pages/brand/CreateBrand";
+import Brands from "./pages/brand/Brands";
 
 // 🔐 Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -37,6 +39,8 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+         <Route path="/create-brand" element={<ProtectedRoute><CreateBrand /></ProtectedRoute>}/>
+         <Route path="/brands" element={<ProtectedRoute><Brands /></ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>
   );

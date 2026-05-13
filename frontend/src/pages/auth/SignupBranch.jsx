@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { signupBranch } from "../api/authApi";
+import { signupBranch } from "../../api/authApi";
 import { useNavigate, Link } from "react-router-dom";
 
 const SignupBranch = () => {

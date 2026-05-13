@@ -4,7 +4,7 @@ import {
   createBrand,
   getBrands,
   searchBrands,
-  getBrandById,
+  getBrand,
   updateBrand,
   deleteBrand,
 } from "../controllers/brandController.js";
@@ -17,7 +17,7 @@ const router = express.Router();
 // Public Routes
 router.get("/", getBrands);
 router.get("/search", searchBrands);
-router.get("/:id", getBrandById);
+router.get("/:id", getBrand);
 
 // Brand Owner & Admin Routes
 router.post(

@@ -43,7 +43,7 @@ export const getBrands = async (req, res) => {
     res.json({
       success: true,
       count: brands.length,
-      brands: brand,
+      brands,
     });
   } catch (error) {
     res.status(500).json({ message: error.message || "Error fetching brands" });

@@ -1,46 +1,52 @@
 import { useState } from "react";
-import { signup } from "../api/authApi";
+import { signupDelivery } from "../../api/authApi";
 import { useNavigate, Link } from "react-router-dom";
 
-const Signup = () => {
-  const navigate = useNavigate();
-
+const SignupDelivery = () => {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    phone: "",
     password: "",
+    phone: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // 🔄 handle input
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // 🚀 handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!form.name || !form.email || !form.password) {
+      setError("Please fill all required fields");
+      setLoading(false);
+      return;
+    }
+
+    const cleanedForm = {
+      ...form,
+      name: form.name.trim(),
+      email: form.email.trim().toLowerCase(),
+      phone: form.phone.trim(),
+    };
 
     try {
-      setLoading(true);
-      setError("");
+      await signupDelivery(cleanedForm);
 
-      const res = await signup(form);
+      alert("OTP sent to your email 📧");
 
-      console.log("Signup success:", res);
-
-      // 👉 go to OTP page
       navigate("/verify-otp", {
-        state: { email: form.email },
-        replace: true,
+        state: { email: cleanedForm.email },
       });
     } catch (err) {
-      console.log("Frontend error:", err);
-
-      setError(err?.message || "Something went wrong");
+      setError(err.response?.data?.message || "Signup failed");
     } finally {
       setLoading(false);
     }
@@ -48,22 +54,24 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#121212]">
-      <div className="bg-[#1e1e1e] p-8 rounded-2xl shadow-xl w-[350px]">
+      <div className="bg-[#1e1e1e] p-8 rounded-2xl shadow-xl w-[360px]">
         <h2 className="mb-6 text-2xl font-bold text-center text-white">
-          Create your Byto account
+          Become a Delivery Partner
         </h2>
 
-        {/* ❌ Error */}
         {error && (
-          <p className="mb-4 text-sm text-center text-red-400">{error}</p>
+          <p className="mb-4 text-sm text-center text-red-400">
+            {error}
+          </p>
         )}
 
         <form onSubmit={handleSubmit}>
           <input
             name="name"
             placeholder="Full Name"
-            className="w-full mb-4 p-3 rounded-lg bg-[#2a2a2a] text-white outline-none"
+            className="input"
             onChange={handleChange}
+            disabled={loading}
             required
           />
 
@@ -71,8 +79,9 @@ const Signup = () => {
             name="email"
             type="email"
             placeholder="Email"
-            className="w-full mb-4 p-3 rounded-lg bg-[#2a2a2a] text-white outline-none"
+            className="input"
             onChange={handleChange}
+            disabled={loading}
             required
           />
 
@@ -80,16 +89,18 @@ const Signup = () => {
             name="phone"
             placeholder="Phone Number"
             maxLength={10}
-            className="w-full mb-4 p-3 rounded-lg bg-[#2a2a2a] text-white outline-none"
+            className="input"
             onChange={handleChange}
+            disabled={loading}
           />
 
           <input
             name="password"
             type="password"
             placeholder="Password"
-            className="w-full mb-6 p-3 rounded-lg bg-[#2a2a2a] text-white outline-none"
+            className="mb-6 input"
             onChange={handleChange}
+            disabled={loading}
             required
           />
 
@@ -98,7 +109,7 @@ const Signup = () => {
             disabled={loading}
             className="w-full py-3 font-semibold text-white transition bg-orange-500 rounded-lg hover:bg-orange-600"
           >
-            {loading ? "Creating..." : "Sign Up"}
+            {loading ? "Creating..." : "Register"}
           </button>
         </form>
 
@@ -113,4 +124,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignupDelivery;
