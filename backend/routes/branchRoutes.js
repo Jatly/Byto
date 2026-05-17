@@ -1,13 +1,6 @@
 import express from "express";
 
-import {
-  createBranch,
-  getNearbyBranches,
-  getBranchById,
-  updateBranch,
-  toggleBranchStatus,
-  deleteBranch,
-} from "../controllers/branchController.js";
+
 
 import { protect } from "../middleware/authMiddleware.js";
 import { authorize } from "../middleware/roleMiddleware.js";
@@ -19,10 +12,10 @@ const router = express.Router();
 // =====================================
 
 // Nearby Branches
-router.get("/nearby", getNearbyBranches);
+router.get("/nearby", getNearByBranche);
 
 // Get Single Branch
-router.get("/:id", getBranchById);
+router.get("/:id", getBranch);
 
 // =====================================
 //  BRANCH OWNER ROUTES
