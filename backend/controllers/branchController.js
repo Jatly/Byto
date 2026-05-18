@@ -49,7 +49,7 @@ export const createBranch = async (req, res) => {
 };
 
 // get nearby branches
-export const getNearByBranches = async (req, res) => {
+export const getNearbyBranches = async (req, res) => {
   try {
     const { lat, lng } = req.query;
 
@@ -96,7 +96,7 @@ export const getNearByBranches = async (req, res) => {
 };
 
 // Get single Branch
-export const getBranch = async (req, res) => {
+export const getBranchById = async (req, res) => {
   try {
     const branch = await Branch.findById(req.params.id)
       .populate("brand")
@@ -213,17 +213,9 @@ export const deleteBranch = async (req, res) => {
   }
 };
 
-
 // 📏 Distance Calculator (Haversine Formula)
-const calculateDistance = (
-  lat1,
-  lon1,
-  lat2,
-  lon2
-) => {
-
-  const toRad = (value) =>
-    (value * Math.PI) / 180;
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const toRad = (value) => (value * Math.PI) / 180;
 
   const R = 6371;
 
@@ -232,18 +224,13 @@ const calculateDistance = (
   const dLon = toRad(lon2 - lon1);
 
   const a =
-    Math.sin(dLat / 2) *
-      Math.sin(dLat / 2) +
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(toRad(lat1)) *
       Math.cos(toRad(lat2)) *
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
 
-  const c =
-    2 * Math.atan2(
-      Math.sqrt(a),
-      Math.sqrt(1 - a)
-    );
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
   return R * c;
 };
