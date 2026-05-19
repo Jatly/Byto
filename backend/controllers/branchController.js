@@ -234,3 +234,24 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 
   return R * c;
 };
+
+// Get My Branches
+export const getMyBranches = async (req, res) => {
+  try {
+    const branches = await Branch.find({
+      owner: req.user._id,
+      isDeleted: false,
+    })
+      .populate("brand", "name logo")
+      .sort({ createdAt: -1 });
+    res.json({
+      success: true,
+      count: branches.length,
+      branches,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};

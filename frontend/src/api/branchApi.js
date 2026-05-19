@@ -39,3 +39,7 @@ export const toggleBranchStatus = (id) => API.patch(`/${id}/toggle`);
 
 // Delete Branch
 export const deleteBranch = (id) => API.delete(`/${id}`);
+
+// Get My Branches
+export const getMyBranches = () =>
+  API.get("/my-branches");

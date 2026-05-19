@@ -7,6 +7,7 @@ import {
   updateBranch,
   toggleBranchStatus,
   deleteBranch,
+  getMyBranches,
 } from "../controllers/branchController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -34,6 +35,12 @@ router.get(
   getBranchById
 );
 
+router.get(
+  "/my-branches",
+  protect,
+  authorize("branch"),
+  getMyBranches
+);
 
 
 // =====================================
