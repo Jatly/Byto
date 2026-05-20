@@ -10,6 +10,7 @@ import Profile from "./pages/profile/Profile";
 import CreateBrand from "./pages/brand/CreateBrand";
 import Brands from "./pages/brand/Brands";
 import CreateBranch from "./pages/branch/CreateBranch";
+import Branches from "./pages/branch/Branches";
 
 // 🔐 Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -43,6 +44,8 @@ const App = () => {
          <Route path="/create-brand" element={<ProtectedRoute><CreateBrand /></ProtectedRoute>}/>
          <Route path="/brands" element={<ProtectedRoute><Brands /></ProtectedRoute>}/>
          <Route path="/add-branch" element={<ProtectedRoute><CreateBranch /></ProtectedRoute>}/>
+         <Route path="/branches" element={<ProtectedRoute><Branches /></ProtectedRoute>}/>
+
 
       </Routes>
     </BrowserRouter>
