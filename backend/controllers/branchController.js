@@ -3,6 +3,8 @@ import Branch from "../models/Branch.js";
 // Create a new branch
 export const createBranch = async (req, res) => {
   try {
+    console.log("BODY:", req.body);
+    console.log("USER:", req.user);
     const {
       brand,
       name,
@@ -24,6 +26,23 @@ export const createBranch = async (req, res) => {
 
     if (existingBranch) {
       return res.status(400).json({ message: "Branch already exists" });
+    }
+    if (!brand) {
+  return res.status(400).json({
+    message: "Brand is required",
+  });
+}
+
+    const ownedBrand = await Brand.findOne({
+      _id: brand,
+      owner: req.user._id,
+      isDeleted: false,
+    });
+
+    if (!ownedBrand) {
+      return res.status(403).json({
+        message: "You can only create branches for your own brand",
+      });
     }
 
     const branch = await Branch.create({
@@ -238,18 +257,23 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 // Get My Branches
 export const getMyBranches = async (req, res) => {
   try {
+    console.log("REQ USER:", req.user);
+
     const branches = await Branch.find({
       owner: req.user._id,
       isDeleted: false,
     })
       .populate("brand", "name logo")
       .sort({ createdAt: -1 });
+
     res.json({
       success: true,
       count: branches.length,
       branches,
     });
   } catch (error) {
+    console.log("MY BRANCHES ERROR:", error);
+
     res.status(500).json({
       message: error.message,
     });

@@ -7,6 +7,7 @@ import {
   getBrand,
   updateBrand,
   deleteBrand,
+  joinBrand,
 } from "../controllers/brandController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -26,7 +27,13 @@ router.post(
   authorize("branch"),
   createBrand
 );
-
+// Join Existing Brand
+router.post(
+  "/join",
+  protect,
+  authorize("branch"),
+  joinBrand
+);
 router.put(
   "/:id",
   protect,

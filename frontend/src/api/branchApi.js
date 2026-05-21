@@ -41,5 +41,13 @@ export const toggleBranchStatus = (id) => API.patch(`/${id}/toggle`);
 export const deleteBranch = (id) => API.delete(`/${id}`);
 
 // Get My Branches
-export const getMyBranches = () =>
-  API.get("/my-branches");
+export const getMyBranches = async () => {
+  const res = await API.get("/my-branches");
+  return res.data;
+};
+
+// Join Brand
+export const joinBrand = (brandId) =>
+  API.post("/join", {
+    brandId,
+  });

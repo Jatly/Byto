@@ -7,7 +7,6 @@ import {
   deleteBranch,
 } from "../../api/branchApi";
 
-
 const Branches = () => {
   const navigate = useNavigate();
   const [branches, setBranches] = useState([]);
@@ -18,7 +17,7 @@ const Branches = () => {
   const fetchBranches = async () => {
     try {
       const res = await getMyBranches();
-      setBranches(res.data.branches);
+      setBranches(res.branches);
     } catch (error) {
       setError("Failed to load branches");
       console.log(error);
@@ -86,7 +85,7 @@ const Branches = () => {
 
             {/* Create Button */}
             <button
-              onClick={() => navigate("/branch/create")}
+              onClick={() => navigate("/add-branch")}
               className="py-4 text-lg font-bold text-orange-600 transition bg-white shadow-lg hover:bg-orange-100 px-7 rounded-2xl"
             >
               + Create Branch

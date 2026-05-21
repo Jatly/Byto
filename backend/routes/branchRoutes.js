@@ -29,11 +29,7 @@ router.get(
 );
 
 
-// Get Single Branch
-router.get(
-  "/:id",
-  getBranchById
-);
+
 
 router.get(
   "/my-branches",
@@ -42,7 +38,11 @@ router.get(
   getMyBranches
 );
 
-
+// Get Single Branch
+router.get(
+  "/:id",
+  getBranchById
+);
 // =====================================
 // BRANCH OWNER ROUTES
 // =====================================

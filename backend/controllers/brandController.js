@@ -3,17 +3,45 @@ import Brand from "../models/Brand.js";
 // Create a new brand
 export const createBrand = async (req, res) => {
   try {
-    const { name, description, logo, cuisineType, phone, email, website } =
-      req.body;
-    const existingBrand = await Brand.findOne({
-      name: name.trim(),
-      isDeleted: false,
-    });
-    if (existingBrand) {
-      return res
-        .status(400)
-        .json({ message: "Brand with this name already exists" });
+
+    const {
+      name,
+      description,
+      logo,
+      cuisineType,
+      phone,
+      email,
+      website,
+    } = req.body;
+
+    // check if user already owns a brand
+    const alreadyOwnedBrand =
+      await Brand.findOne({
+        owner: req.user._id,
+        isDeleted: false,
+      });
+
+    if (alreadyOwnedBrand) {
+      return res.status(400).json({
+        message:
+          "You already own a brand",
+      });
     }
+
+    // check existing brand name
+    const existingBrand =
+      await Brand.findOne({
+        name: name.trim(),
+        isDeleted: false,
+      });
+
+    if (existingBrand) {
+      return res.status(400).json({
+        message:
+          "Brand with this name already exists",
+      });
+    }
+
     const brand = await Brand.create({
       name: name.trim(),
       description,
@@ -24,13 +52,21 @@ export const createBrand = async (req, res) => {
       website,
       owner: req.user._id,
     });
+
     res.status(201).json({
       success: true,
-      message: "Brand created successfully",
+      message:
+        "Brand created successfully",
       brand,
     });
+
   } catch (error) {
-    res.status(500).json({ message: error.message || "Error creating brand" });
+
+    res.status(500).json({
+      message:
+        error.message ||
+        "Error creating brand",
+    });
   }
 };
 
@@ -45,6 +81,8 @@ export const getBrands = async (req, res) => {
       count: brands.length,
       brands,
     });
+    req.user.brand = brand._id;
+    await req.user.save();
   } catch (error) {
     res.status(500).json({ message: error.message || "Error fetching brands" });
   }
@@ -151,3 +189,30 @@ export const deleteBrand = async (req, res) => {
     res.status(500).json({ message: error.message || "Error deleting brand" });
   }
 };
+
+
+// Join Existing Brand
+export const joinBrand =  async(req,res)=>{
+  try{
+    const {brandId}=req.body;
+    const brand = await Brand.findById(brandId);
+    if(!brand || brand.isDeleted){
+      return res.status(404).json({message:"Brand not found"});
+    }
+
+    // Check if user already owns a brand
+    const alreadyOwnedBrand = await Brand.findOne({owner:req.user._id,isDeleted:false,});
+    if(alreadyOwnedBrand){
+      return res.status(400).json({message:"You already own a brand"});
+    }
+    // already joined brand
+    if(req.user.brand){
+      return res.status(400).json({message:"You have already joined a brand"});
+  }
+    req.user.brand = brand._id;
+    await req.user.save();
+    res.json({success:true,message:`Joined brand ${brand.name} successfully`,brand});
+  }catch(error){
+    res.status(500).json({message:error.message || "Error joining brand"});
+  }
+}

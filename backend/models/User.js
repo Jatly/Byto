@@ -40,6 +40,11 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    brand: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Brand",
+      default: null,
+    },
     otp: {
       type: String, // store hashed OTP (safer)
       select: false,
