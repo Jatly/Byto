@@ -22,8 +22,10 @@ API.interceptors.request.use((req) => {
 // =====================================
 
 // Create Branch
-export const createBranch = (data) => API.post("/create", data);
-
+export const createBranch = async (data) => {
+  const res = await API.post("/create", data);
+  return res.data;
+};
 // Get Nearby Branches
 export const getNearbyBranches = (lat, lng) =>
   API.get(`/nearby?lat=${lat}&lng=${lng}`);

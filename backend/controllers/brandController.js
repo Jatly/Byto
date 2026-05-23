@@ -81,8 +81,8 @@ export const getBrands = async (req, res) => {
       count: brands.length,
       brands,
     });
-    req.user.brand = brand._id;
-    await req.user.save();
+    // req.user.brands = brands._id;
+    // await req.user.save();
   } catch (error) {
     res.status(500).json({ message: error.message || "Error fetching brands" });
   }

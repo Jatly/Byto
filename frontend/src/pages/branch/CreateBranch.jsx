@@ -28,27 +28,32 @@ const CreateBranch = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-
+  // =====================================
   // 🍔 Fetch Brands
+  // =====================================
   const fetchBrands = async () => {
     try {
 
       const res = await getBrands();
 
-      setBrands(res.data.brands);
+      setBrands(res.brands || []);
+      console.log(brands);
 
     } catch (err) {
+
       console.log(err);
+
+      setError("Failed to fetch brands");
     }
   };
-
 
   useEffect(() => {
     fetchBrands();
   }, []);
 
-
+  // =====================================
   // ✏️ Handle Input
+  // =====================================
   const handleChange = (e) => {
 
     setForm({
@@ -57,11 +62,13 @@ const CreateBranch = () => {
     });
   };
 
-
+  // =====================================
   // 📍 Get Current Location
+  // =====================================
   const getCurrentLocation = () => {
 
     navigator.geolocation.getCurrentPosition(
+
       (position) => {
 
         setForm((prev) => ({
@@ -72,17 +79,17 @@ const CreateBranch = () => {
       },
 
       (error) => {
+
         console.log(error);
 
-        setError(
-          "Failed to fetch current location"
-        );
+        setError("Failed to fetch current location");
       }
     );
   };
 
-
+  // =====================================
   // 🍔 Submit
+  // =====================================
   const handleSubmit = async (e) => {
 
     e.preventDefault();
@@ -97,7 +104,9 @@ const CreateBranch = () => {
       !form.lat ||
       !form.lng
     ) {
+
       setError("Please fill all required fields");
+
       return;
     }
 
@@ -107,33 +116,44 @@ const CreateBranch = () => {
 
       const payload = {
         brand: form.brand,
-        name: form.name,
-        address: form.address,
+        name: form.name.trim(),
+        address: form.address.trim(),
 
         location: {
           lat: Number(form.lat),
           lng: Number(form.lng),
         },
 
-        deliveryRadius: Number(
-          form.deliveryRadius
-        ),
+        deliveryRadius: Number(form.deliveryRadius),
 
-        averagePrepTime: Number(
-          form.averagePrepTime
-        ),
+        averagePrepTime: Number(form.averagePrepTime),
 
-        phone: form.phone,
+        phone: form.phone.trim(),
 
         openingTime: form.openingTime,
         closingTime: form.closingTime,
       };
 
-      await createBranch(payload);
+      const res = await createBranch(payload);
+      console.log(res)
 
       setSuccess(
-        "Branch created successfully 🎉"
+        res.message || "Branch created successfully 🎉"
       );
+
+      // Reset Form
+      setForm({
+        brand: "",
+        name: "",
+        address: "",
+        lat: "",
+        lng: "",
+        deliveryRadius: 5,
+        averagePrepTime: 20,
+        phone: "",
+        openingTime: "08:00",
+        closingTime: "23:00",
+      });
 
       setTimeout(() => {
         navigate("/branches");
@@ -141,9 +161,11 @@ const CreateBranch = () => {
 
     } catch (err) {
 
+      console.log(err);
+
       setError(
         err.response?.data?.message ||
-          "Failed to create branch"
+        "Failed to create branch"
       );
 
     } finally {
@@ -151,7 +173,6 @@ const CreateBranch = () => {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-white">
@@ -177,90 +198,21 @@ const CreateBranch = () => {
             </h1>
 
             <p className="max-w-2xl text-lg leading-relaxed text-orange-100/90">
-              Set up your kitchen branch, define delivery zones,
-              and start fulfilling hyperlocal orders with Byto.
+              Set up your kitchen branch and start fulfilling hyperlocal orders.
             </p>
 
           </div>
         </div>
       </div>
 
-
       {/* Main */}
       <div className="max-w-6xl px-6 py-12 mx-auto">
 
         <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
 
-          {/* Left Info */}
+          {/* Preview */}
           <div className="space-y-6">
 
-            {/* Features */}
-            <div className="bg-[#181818] border border-white/5 rounded-3xl p-6">
-
-              <h2 className="mb-6 text-2xl font-bold">
-                Branch Features
-              </h2>
-
-              <div className="space-y-5">
-
-                <div className="flex gap-4">
-
-                  <div className="flex items-center justify-center w-12 h-12 text-xl rounded-2xl bg-orange-500/10">
-                    📍
-                  </div>
-
-                  <div>
-                    <h3 className="mb-1 font-semibold">
-                      Hyperlocal Delivery
-                    </h3>
-
-                    <p className="text-sm text-gray-400">
-                      Deliver within optimized 3–5 km zones.
-                    </p>
-                  </div>
-                </div>
-
-
-                <div className="flex gap-4">
-
-                  <div className="flex items-center justify-center w-12 h-12 text-xl rounded-2xl bg-orange-500/10">
-                    ⚡
-                  </div>
-
-                  <div>
-                    <h3 className="mb-1 font-semibold">
-                      Smart Routing
-                    </h3>
-
-                    <p className="text-sm text-gray-400">
-                      Improve delivery speed with branch selection.
-                    </p>
-                  </div>
-                </div>
-
-
-                <div className="flex gap-4">
-
-                  <div className="flex items-center justify-center w-12 h-12 text-xl rounded-2xl bg-orange-500/10">
-                    🍱
-                  </div>
-
-                  <div>
-                    <h3 className="mb-1 font-semibold">
-                      Subscription Fulfillment
-                    </h3>
-
-                    <p className="text-sm text-gray-400">
-                      Handle recurring nutrition deliveries efficiently.
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-
-            {/* Preview */}
             <div className="bg-[#181818] border border-white/5 rounded-3xl p-6">
 
               <h3 className="mb-5 text-xl font-bold">
@@ -279,7 +231,6 @@ const CreateBranch = () => {
                   </h2>
                 </div>
 
-
                 <div>
                   <p className="mb-1 text-sm text-gray-400">
                     Delivery Radius
@@ -290,23 +241,19 @@ const CreateBranch = () => {
                   </div>
                 </div>
 
-
                 <div>
                   <p className="mb-1 text-sm text-gray-400">
-                    Average Delivery ETA
+                    Estimated ETA
                   </p>
 
                   <div className="text-lg font-semibold">
-                    ~
-                    {Number(form.averagePrepTime) + 15}
-                    mins
+                    ~{Number(form.averagePrepTime) + 15} mins
                   </div>
                 </div>
 
               </div>
             </div>
           </div>
-
 
           {/* Form */}
           <div className="xl:col-span-2 bg-[#181818] border border-white/5 rounded-3xl p-8 shadow-2xl">
@@ -322,7 +269,6 @@ const CreateBranch = () => {
               </p>
             </div>
 
-
             {/* Alerts */}
             {error && (
               <div className="px-5 py-4 mb-6 text-red-400 border bg-red-500/10 border-red-500/30 rounded-2xl">
@@ -335,7 +281,6 @@ const CreateBranch = () => {
                 {success}
               </div>
             )}
-
 
             {/* Form */}
             <form
@@ -361,6 +306,7 @@ const CreateBranch = () => {
                   </option>
 
                   {brands.map((brand) => (
+                     
                     <option
                       key={brand._id}
                       value={brand._id}

@@ -1,5 +1,5 @@
 import Branch from "../models/Branch.js";
-
+import Brand from "../models/Brand.js";
 // Create a new branch
 export const createBranch = async (req, res) => {
   try {
@@ -63,8 +63,14 @@ export const createBranch = async (req, res) => {
       branch,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message || "Error creating branch" });
-  }
+
+  console.log("CREATE BRANCH ERROR:");
+  console.log(error);
+
+  return res.status(500).json({
+    message: error.message || "Error creating branch",
+  });
+}
 };
 
 // get nearby branches

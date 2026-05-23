@@ -33,8 +33,10 @@ export const createBrand = (data) =>
 
 
 // Get All Brands
-export const getBrands = () =>
-  API.get("/");
+export const getBrands = async () => {
+  const res = await API.get("/");
+  return res.data;
+};
 
 
 // Search Brands
