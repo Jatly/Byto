@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getBrands } from "../../api/brandApi";
 import { createBranch } from "../../api/branchApi";
 
 const CreateBranch = () => {
 
   const navigate = useNavigate();
 
-  const [brands, setBrands] = useState([]);
+  // Current Brand
+  const brand = JSON.parse(
+    localStorage.getItem("brand")
+  );
 
   const [form, setForm] = useState({
-    brand: "",
     name: "",
     address: "",
     lat: "",
@@ -25,34 +26,16 @@ const CreateBranch = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const [locationLoading, setLocationLoading] =
+    useState(false);
+
   const [error, setError] = useState("");
+
   const [success, setSuccess] = useState("");
 
-  // =====================================
-  // 🍔 Fetch Brands
-  // =====================================
-  const fetchBrands = async () => {
-    try {
-
-      const res = await getBrands();
-
-      setBrands(res.brands || []);
-      console.log(brands);
-
-    } catch (err) {
-
-      console.log(err);
-
-      setError("Failed to fetch brands");
-    }
-  };
-
-  useEffect(() => {
-    fetchBrands();
-  }, []);
 
   // =====================================
-  // ✏️ Handle Input
+  // Handle Input
   // =====================================
   const handleChange = (e) => {
 
@@ -62,10 +45,13 @@ const CreateBranch = () => {
     });
   };
 
+
   // =====================================
-  // 📍 Get Current Location
+  //  Detect Location
   // =====================================
   const getCurrentLocation = () => {
+
+    setLocationLoading(true);
 
     navigator.geolocation.getCurrentPosition(
 
@@ -76,19 +62,26 @@ const CreateBranch = () => {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         }));
+
+        setLocationLoading(false);
       },
 
       (error) => {
 
         console.log(error);
 
-        setError("Failed to fetch current location");
+        setLocationLoading(false);
+
+        setError(
+          "Failed to detect current location"
+        );
       }
     );
   };
 
+
   // =====================================
-  // 🍔 Submit
+  //  Submit
   // =====================================
   const handleSubmit = async (e) => {
 
@@ -98,14 +91,15 @@ const CreateBranch = () => {
     setSuccess("");
 
     if (
-      !form.brand ||
       !form.name ||
       !form.address ||
       !form.lat ||
       !form.lng
     ) {
 
-      setError("Please fill all required fields");
+      setError(
+        "Please fill all required fields"
+      );
 
       return;
     }
@@ -115,8 +109,9 @@ const CreateBranch = () => {
     try {
 
       const payload = {
-        brand: form.brand,
+
         name: form.name.trim(),
+
         address: form.address.trim(),
 
         location: {
@@ -124,26 +119,32 @@ const CreateBranch = () => {
           lng: Number(form.lng),
         },
 
-        deliveryRadius: Number(form.deliveryRadius),
+        deliveryRadius: Number(
+          form.deliveryRadius
+        ),
 
-        averagePrepTime: Number(form.averagePrepTime),
+        averagePrepTime: Number(
+          form.averagePrepTime
+        ),
 
         phone: form.phone.trim(),
 
         openingTime: form.openingTime,
+
         closingTime: form.closingTime,
       };
 
-      const res = await createBranch(payload);
-      console.log(res)
+      const res =
+        await createBranch(payload);
+
+      console.log(res);
 
       setSuccess(
-        res.message || "Branch created successfully 🎉"
+        "Branch created successfully 🎉"
       );
 
-      // Reset Form
+      // Reset
       setForm({
-        brand: "",
         name: "",
         address: "",
         lat: "",
@@ -165,7 +166,7 @@ const CreateBranch = () => {
 
       setError(
         err.response?.data?.message ||
-        "Failed to create branch"
+          "Failed to create branch"
       );
 
     } finally {
@@ -174,12 +175,17 @@ const CreateBranch = () => {
     }
   };
 
+
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-white">
 
-      {/* Hero */}
+      {/* ===================================== */}
+      {/* HERO */}
+      {/* ===================================== */}
+
       <div className="relative overflow-hidden border-b border-white/5 bg-gradient-to-br from-orange-500 via-orange-600 to-orange-800">
 
+        {/* Glow */}
         <div className="absolute top-0 left-0 rounded-full w-96 h-96 bg-white/10 blur-3xl"></div>
 
         <div className="relative px-6 py-24 mx-auto max-w-7xl">
@@ -198,66 +204,151 @@ const CreateBranch = () => {
             </h1>
 
             <p className="max-w-2xl text-lg leading-relaxed text-orange-100/90">
-              Set up your kitchen branch and start fulfilling hyperlocal orders.
+              Expand your food business with
+              hyperlocal kitchen branches and
+              optimized delivery zones.
             </p>
 
           </div>
         </div>
       </div>
 
-      {/* Main */}
-      <div className="max-w-6xl px-6 py-12 mx-auto">
+
+      {/* ===================================== */}
+      {/* MAIN */}
+      {/* ===================================== */}
+
+      <div className="px-6 py-12 mx-auto max-w-7xl">
 
         <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
 
-          {/* Preview */}
+
+          {/* ===================================== */}
+          {/* SIDEBAR */}
+          {/* ===================================== */}
+
           <div className="space-y-6">
 
+            {/* Brand Card */}
             <div className="bg-[#181818] border border-white/5 rounded-3xl p-6">
 
-              <h3 className="mb-5 text-xl font-bold">
+              <p className="mb-4 text-sm text-gray-400">
+                Creating branch for
+              </p>
+
+              <div className="flex items-center gap-4">
+
+                {brand?.logo ? (
+
+                  <img
+                    src={brand.logo}
+                    alt={brand.name}
+                    className="object-cover w-20 h-20 rounded-2xl"
+                  />
+
+                ) : (
+
+                  <div className="flex items-center justify-center w-20 h-20 text-3xl font-black rounded-2xl bg-gradient-to-br from-orange-500 to-orange-700">
+                    {brand?.name?.charAt(0)}
+                  </div>
+
+                )}
+
+                <div>
+
+                  <h2 className="text-2xl font-bold">
+                    {brand?.name}
+                  </h2>
+
+                  <p className="mt-1 text-sm text-orange-400">
+                    Byto Partner Brand
+                  </p>
+
+                </div>
+              </div>
+            </div>
+
+
+            {/* Preview */}
+            <div className="bg-[#181818] border border-white/5 rounded-3xl p-6">
+
+              <h3 className="mb-6 text-xl font-bold">
                 Branch Preview
               </h3>
 
-              <div className="space-y-4">
+              <div className="space-y-5">
 
                 <div>
+
                   <p className="mb-1 text-sm text-gray-400">
                     Branch Name
                   </p>
 
                   <h2 className="text-2xl font-bold">
-                    {form.name || "Branch Name"}
+                    {form.name ||
+                      "Branch Name"}
                   </h2>
+
                 </div>
 
+
                 <div>
-                  <p className="mb-1 text-sm text-gray-400">
+
+                  <p className="mb-2 text-sm text-gray-400">
                     Delivery Radius
                   </p>
 
                   <div className="inline-flex px-4 py-2 text-sm text-orange-400 rounded-full bg-orange-500/10">
-                    {form.deliveryRadius} KM Radius
+                    {
+                      form.deliveryRadius
+                    }{" "}
+                    KM Radius
                   </div>
+
                 </div>
 
+
                 <div>
-                  <p className="mb-1 text-sm text-gray-400">
+
+                  <p className="mb-2 text-sm text-gray-400">
                     Estimated ETA
                   </p>
 
                   <div className="text-lg font-semibold">
-                    ~{Number(form.averagePrepTime) + 15} mins
+                    ~
+                    {Number(
+                      form.averagePrepTime
+                    ) + 15}{" "}
+                    mins
                   </div>
+
+                </div>
+
+
+                <div>
+
+                  <p className="mb-2 text-sm text-gray-400">
+                    Status
+                  </p>
+
+                  <div className="inline-flex px-4 py-2 text-sm text-green-400 rounded-full bg-green-500/10">
+                    Ready to Launch
+                  </div>
+
                 </div>
 
               </div>
             </div>
           </div>
 
-          {/* Form */}
+
+          {/* ===================================== */}
+          {/* FORM */}
+          {/* ===================================== */}
+
           <div className="xl:col-span-2 bg-[#181818] border border-white/5 rounded-3xl p-8 shadow-2xl">
 
+            {/* Header */}
             <div className="mb-10">
 
               <h2 className="mb-3 text-3xl font-bold">
@@ -265,58 +356,33 @@ const CreateBranch = () => {
               </h2>
 
               <p className="text-gray-400">
-                Configure your branch operations and delivery settings.
+                Configure your kitchen branch,
+                delivery radius, and operational
+                settings.
               </p>
+
             </div>
+
 
             {/* Alerts */}
             {error && (
-              <div className="px-5 py-4 mb-6 text-red-400 border bg-red-500/10 border-red-500/30 rounded-2xl">
+              <div className="px-5 py-4 mb-6 text-red-400 border rounded-2xl bg-red-500/10 border-red-500/30">
                 {error}
               </div>
             )}
 
             {success && (
-              <div className="px-5 py-4 mb-6 text-green-400 border bg-green-500/10 border-green-500/30 rounded-2xl">
+              <div className="px-5 py-4 mb-6 text-green-400 border rounded-2xl bg-green-500/10 border-green-500/30">
                 {success}
               </div>
             )}
+
 
             {/* Form */}
             <form
               onSubmit={handleSubmit}
               className="grid grid-cols-1 md:grid-cols-2 gap-7"
             >
-
-              {/* Brand */}
-              <div className="md:col-span-2">
-
-                <label className="block mb-3 text-sm text-gray-400">
-                  Select Brand *
-                </label>
-
-                <select
-                  name="brand"
-                  value={form.brand}
-                  onChange={handleChange}
-                  className="input"
-                >
-                  <option value="">
-                    Select Brand
-                  </option>
-
-                  {brands.map((brand) => (
-                     
-                    <option
-                      key={brand._id}
-                      value={brand._id}
-                    >
-                      {brand.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
 
               {/* Branch Name */}
               <div>
@@ -333,6 +399,7 @@ const CreateBranch = () => {
                   placeholder="Burger Hub - OMR"
                   className="input"
                 />
+
               </div>
 
 
@@ -351,6 +418,7 @@ const CreateBranch = () => {
                   placeholder="9876543210"
                   className="input"
                 />
+
               </div>
 
 
@@ -358,17 +426,18 @@ const CreateBranch = () => {
               <div className="md:col-span-2">
 
                 <label className="block mb-3 text-sm text-gray-400">
-                  Address *
+                  Full Address *
                 </label>
 
                 <textarea
+                  rows={4}
                   name="address"
                   value={form.address}
                   onChange={handleChange}
-                  rows={4}
-                  placeholder="Enter full branch address..."
+                  placeholder="Enter complete branch address..."
                   className="resize-none input"
                 />
+
               </div>
 
 
@@ -383,12 +452,21 @@ const CreateBranch = () => {
 
                   <button
                     type="button"
-                    onClick={getCurrentLocation}
+                    onClick={
+                      getCurrentLocation
+                    }
+                    disabled={
+                      locationLoading
+                    }
                     className="text-sm text-orange-400 hover:text-orange-300"
                   >
-                    Use Current Location
+                    {locationLoading
+                      ? "Detecting..."
+                      : "📍 Detect Kitchen Location"}
                   </button>
+
                 </div>
+
 
                 <div className="grid grid-cols-2 gap-4">
 
@@ -411,10 +489,11 @@ const CreateBranch = () => {
                   />
 
                 </div>
+
               </div>
 
 
-              {/* Radius */}
+              {/* Delivery Radius */}
               <div>
 
                 <label className="block mb-3 text-sm text-gray-400">
@@ -424,10 +503,13 @@ const CreateBranch = () => {
                 <input
                   type="number"
                   name="deliveryRadius"
-                  value={form.deliveryRadius}
+                  value={
+                    form.deliveryRadius
+                  }
                   onChange={handleChange}
                   className="input"
                 />
+
               </div>
 
 
@@ -435,16 +517,19 @@ const CreateBranch = () => {
               <div>
 
                 <label className="block mb-3 text-sm text-gray-400">
-                  Average Prep Time (mins)
+                  Avg Prep Time (mins)
                 </label>
 
                 <input
                   type="number"
                   name="averagePrepTime"
-                  value={form.averagePrepTime}
+                  value={
+                    form.averagePrepTime
+                  }
                   onChange={handleChange}
                   className="input"
                 />
+
               </div>
 
 
@@ -462,6 +547,7 @@ const CreateBranch = () => {
                   onChange={handleChange}
                   className="input"
                 />
+
               </div>
 
 
@@ -479,6 +565,7 @@ const CreateBranch = () => {
                   onChange={handleChange}
                   className="input"
                 />
+
               </div>
 
 
@@ -488,7 +575,7 @@ const CreateBranch = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-orange-500 hover:bg-orange-600 transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] py-4 rounded-2xl font-bold text-lg shadow-lg shadow-orange-500/20"
+                  className="w-full bg-orange-500 hover:bg-orange-600 transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] py-4 rounded-2xl font-bold text-lg shadow-lg shadow-orange-500/20 disabled:opacity-60"
                 >
                   {loading
                     ? "Creating Branch..."
@@ -504,5 +591,4 @@ const CreateBranch = () => {
     </div>
   );
 };
-
 export default CreateBranch;

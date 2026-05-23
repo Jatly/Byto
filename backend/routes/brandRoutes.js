@@ -47,5 +47,9 @@ router.delete(
   authorize("branch"),
   deleteBrand
 );
-
+//  Join Existing Brand
+export const joinBrand = (brandId) =>
+  API.post("/join", {
+    brandId,
+  });
 export default router;

@@ -1,12 +1,13 @@
 import Branch from "../models/Branch.js";
 import Brand from "../models/Brand.js";
-// Create a new branch
+//  Create a new branch
 export const createBranch = async (req, res) => {
   try {
+
     console.log("BODY:", req.body);
     console.log("USER:", req.user);
+
     const {
-      brand,
       name,
       address,
       location,
@@ -17,60 +18,74 @@ export const createBranch = async (req, res) => {
       closingTime,
     } = req.body;
 
-    // check existing branch
-    const existingBranch = await Branch.findOne({
-      name: name.trim(),
-      address: address.trim(),
-      isDeleted: false,
-    });
 
-    if (existingBranch) {
-      return res.status(400).json({ message: "Branch already exists" });
-    }
+    // get user's linked brand
+    const brand = req.user.brand;
+
     if (!brand) {
-  return res.status(400).json({
-    message: "Brand is required",
-  });
-}
-
-    const ownedBrand = await Brand.findOne({
-      _id: brand,
-      owner: req.user._id,
-      isDeleted: false,
-    });
-
-    if (!ownedBrand) {
-      return res.status(403).json({
-        message: "You can only create branches for your own brand",
+      return res.status(400).json({
+        message:
+          "You are not linked to any brand",
       });
     }
 
+
+    // check existing branch
+    const existingBranch =
+      await Branch.findOne({
+        name: name.trim(),
+        address: address.trim(),
+        isDeleted: false,
+      });
+
+    if (existingBranch) {
+      return res.status(400).json({
+        message:
+          "Branch already exists",
+      });
+    }
+
+
+    // create branch
     const branch = await Branch.create({
       brand,
       owner: req.user._id,
+
       name: name.trim(),
       address: address.trim(),
+
       location,
+
       deliveryRadius,
       averagePrepTime,
+
       phone,
       openingTime,
       closingTime,
     });
+
+
     res.status(201).json({
       success: true,
-      message: "Branch created successfully",
+      message:
+        "Branch created successfully",
       branch,
     });
+
   } catch (error) {
 
-  console.log("CREATE BRANCH ERROR:");
-  console.log(error);
+    console.log(
+      "CREATE BRANCH ERROR:"
+    );
 
-  return res.status(500).json({
-    message: error.message || "Error creating branch",
-  });
-}
+    console.log(error);
+
+    return res.status(500).json({
+      message:
+        error.message ||
+        "Error creating branch",
+    });
+  }
 };
 
 // get nearby branches

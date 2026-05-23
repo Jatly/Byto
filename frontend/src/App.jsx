@@ -11,6 +11,7 @@ import CreateBrand from "./pages/brand/CreateBrand";
 import Brands from "./pages/brand/Brands";
 import CreateBranch from "./pages/branch/CreateBranch";
 import Branches from "./pages/branch/Branches";
+import JoinBrand from "./pages/brand/JoinBrand";
 
 // 🔐 Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -45,6 +46,9 @@ const App = () => {
          <Route path="/brands" element={<ProtectedRoute><Brands /></ProtectedRoute>}/>
          <Route path="/add-branch" element={<ProtectedRoute><CreateBranch /></ProtectedRoute>}/>
          <Route path="/branches" element={<ProtectedRoute><Branches /></ProtectedRoute>}/>
+         <Route path="/join-brand" element={<ProtectedRoute><JoinBrand /></ProtectedRoute>}/>
+
+
 
 
       </Routes>

@@ -31,7 +31,11 @@ API.interceptors.request.use((req) => {
 export const createBrand = (data) =>
   API.post("/create", data);
 
-
+// Join Existing Brand
+export const joinBrand = (brandId) =>
+  API.post("/join", {
+    brandId,
+  });
 // Get All Brands
 export const getBrands = async () => {
   const res = await API.get("/");
