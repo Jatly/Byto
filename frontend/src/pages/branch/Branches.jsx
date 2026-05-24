@@ -192,15 +192,33 @@ const Branches = () => {
                             {branch.brand?.name}
                           </p>
 
-                          <div
-                            className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                              branch.isOpen
-                                ? "bg-green-500/10 text-green-400"
-                                : "bg-red-500/10 text-red-400"
-                            }`}
-                          >
-                            {branch.isOpen ? "Open" : "Closed"}
+                                                    {/* Status */}
+                          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5">
+
+                            <div
+                              className={`w-2.5 h-2.5 rounded-full ${
+                                branch.isOpen
+                                  ? "bg-green-400"
+                                  : "bg-red-400"
+                              }`}
+                            ></div>
+
+                            <span
+                              className={`text-sm font-medium ${
+                                branch.isOpen
+                                  ? "text-green-400"
+                                  : "text-red-400"
+                              }`}
+                            >
+                              {branch.isOpen
+                                ? "Kitchen Open"
+                                : "Kitchen Closed"}
+                            </span>
+
                           </div>
+
+
+
                         </div>
                       </div>
 
