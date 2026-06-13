@@ -42,3 +42,45 @@ export const getCart = async (req, res) => {
   }
 };
 
+// =====================================
+//  ADD TO CART
+// =====================================
+
+export const addToCart = async (
+  req,
+  res
+) => {
+  try {
+
+    const {
+      menuId,
+      quantity = 1,
+      addons = [],
+    } = req.body;
+
+    const menu =
+      await Menu.findById(menuId);
+
+    if (
+      !menu ||
+      menu.isDeleted
+    ) {
+      return res.status(404).json({
+        message:
+          "Menu item not found",
+      });
+    }
+
+    if (!menu.isAvailable) {
+      return res.status(400).json({
+        message:
+          "Menu item unavailable",
+      });
+    }
+
+    let cart =
+      await Cart.findOne({
+        user: req.user._id,
+      });
+
+
