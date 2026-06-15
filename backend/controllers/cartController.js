@@ -126,3 +126,83 @@ export const addToCart = async (req, res) => {
     });
   }
 };
+
+// =====================================
+// UPDATE QUANTITY
+// =====================================
+
+export const updateCartItem =
+  async (req, res) => {
+    try {
+
+      const {
+        itemId,
+        quantity,
+      } = req.body;
+
+      const cart =
+        await Cart.findOne({
+          user: req.user._id,
+        });
+
+      if (!cart) {
+        return res.status(404).json({
+          message:
+            "Cart not found",
+        });
+      }
+
+      const item =
+        cart.items.id(itemId);
+
+      if (!item) {
+        return res.status(404).json({
+          message:
+            "Item not found",
+        });
+      }
+
+      if (quantity <= 0) {
+
+        cart.items.pull(itemId);
+
+      } else {
+
+        item.quantity =
+          quantity;
+
+        const addonTotal =
+          item.addons.reduce(
+            (sum, addon) =>
+              sum + addon.price,
+            0
+          );
+
+        item.totalPrice =
+          (item.price +
+            addonTotal) *
+          quantity;
+      }
+
+      cart.calculateTotals();
+
+      await cart.save();
+
+      res.json({
+        success: true,
+        message:
+          "Cart updated",
+        cart,
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message ||
+          "Error updating cart",
+      });
+    }
+  };
+
+
