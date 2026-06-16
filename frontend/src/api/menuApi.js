@@ -38,12 +38,11 @@ export const createMenu = (data) =>
 
 
 // Get Branch Menus
-export const getBranchMenus = (
-  branchId
-) =>
-  API.get(
-    `/branch/${branchId}`
-  );
+export const getBranchMenus = (branchId) => {
+  console.log("Branch ID:", branchId);
+
+  return API.get(`/branch/${branchId}`);
+};
 
 
 // Get Single Menu

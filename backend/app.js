@@ -23,6 +23,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import brandRoutes from "./routes/brandRoutes.js";
 import branchRoutes from "./routes/branchRoutes.js";
+import menuRoutes from "./routes/menuRoutes.js";
 
 
 app.use("/api/auth", authRoutes);
@@ -30,4 +31,5 @@ app.use("/api/users", userRoutes);
 app.use("/api/brands", brandRoutes);
 
 app.use("/api/branches", branchRoutes);
+app.use("/api/menus", menuRoutes);
 export default app;

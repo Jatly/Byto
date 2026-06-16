@@ -7,6 +7,7 @@ import Branch from "../models/Branch.js";
 
 export const createMenu = async (req, res) => {
   try {
+
     const {
       branch,
       name,
@@ -40,6 +41,7 @@ export const createMenu = async (req, res) => {
     //create menu
     const menu = await Menu.create({
       branch,
+      brand: existingBranch.brand,
       name: name.trim(),
       description,
       images,
@@ -100,7 +102,7 @@ export const getMenuById = async (req, res) => {
     const menu = await Menu.findById(req.params.id).populate(
       "brand",
       "name address",
-    );
+    ).populate("branch", "name address");;
     if (!menu || menu.isDeleted) {
       return res
         .status(404)

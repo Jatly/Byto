@@ -45,7 +45,7 @@ const CreateMenu = () => {
   const fetchBranches = async () => {
     try {
       const res = await getMyBranches();
-      setBranches(res.data.branches);
+      setBranches(res.branches);
     } catch (error) {
       console.log(error);
     }

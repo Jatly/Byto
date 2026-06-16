@@ -13,6 +13,7 @@ import CreateBranch from "./pages/branch/CreateBranch";
 import Branches from "./pages/branch/Branches";
 import JoinBrand from "./pages/brand/JoinBrand";
 import CreateMenu from "./pages/menu/CreateMenu";
+import Menus from "./pages/menu/Menus";
 
 // 🔐 Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -49,6 +50,9 @@ const App = () => {
          <Route path="/branches" element={<ProtectedRoute><Branches /></ProtectedRoute>}/>
          <Route path="/join-brand" element={<ProtectedRoute><JoinBrand /></ProtectedRoute>}/>
          <Route path="/create-menu" element={<ProtectedRoute><CreateMenu /></ProtectedRoute>}/>
+         <Route path="/menus" element={<ProtectedRoute><Menus /></ProtectedRoute>}/>
+
+         
          
 
 
