@@ -8,10 +8,10 @@ import {
 } from "../../api/menuApi";
 
 const Menus = () => {
-  const navigate = useNavigate();
-
   const { branchId } = useParams();
 
+  const navigate = useNavigate();
+  
   const [menus, setMenus] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -28,6 +28,7 @@ const Menus = () => {
 
   const fetchMenus = async () => {
     try {
+      console.log("branchId:", branchId);
       const res = await getBranchMenus(branchId);
 
       setMenus(res.data.menus);
@@ -154,151 +155,160 @@ const Menus = () => {
       : 0;
 
   return (
-    <div className="min-h-screen bg-[#0b0b0b] text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
 
-      {/* HERO */}
+  <div className="px-6 py-8 mx-auto max-w-7xl">
 
-      <div className="border-b border-white/5 bg-gradient-to-r from-orange-500 to-orange-700">
+    {/* HEADER */}
 
-        <div className="max-w-7xl mx-auto px-6 py-20">
+    <div className="flex flex-col gap-6 mb-10 lg:flex-row lg:items-center lg:justify-between">
 
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+      <div>
+        <h1 className="text-4xl font-black tracking-tight lg:text-5xl">
+          Menu Management
+        </h1>
 
-            <div>
-              <h1 className="text-5xl font-black mb-4">
-                Menu Management
-              </h1>
-
-              <p className="text-orange-100 text-lg">
-                Manage food items, nutrition
-                plans and availability
-              </p>
-            </div>
-
-            <button
-              onClick={() =>
-                navigate(
-                  `/branch/${branchId}/menu/create`
-                )
-              }
-              className="bg-white text-orange-600 hover:bg-orange-100 transition px-7 py-4 rounded-2xl font-bold"
-            >
-              + Add Menu Item
-            </button>
-
-          </div>
-        </div>
+        <p className="mt-3 text-lg text-gray-400">
+          Manage menu items, pricing, nutrition and availability
+        </p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <button
+        onClick={() =>
+          navigate(`/branches/${branchId}/menu/create`)
+        }
+        className="px-6 py-3 font-semibold text-white transition-all bg-orange-500 shadow-lg rounded-2xl hover:bg-orange-600 hover:scale-105 shadow-orange-500/20"
+      >
+        + Add Menu Item
+      </button>
 
-        {error && (
-          <div className="mb-6 bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl">
-            {error}
-          </div>
-        )}
+    </div>
 
-        {/* STATS */}
+    {error && (
+      <div className="px-4 py-3 mb-6 text-red-400 border rounded-2xl bg-red-500/10 border-red-500/20">
+        {error}
+      </div>
+    )}
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+    {/* STATS */}
 
-          <div className="bg-[#181818] rounded-3xl p-6 border border-white/5">
-            <p className="text-gray-400 text-sm">
-              Total Items
-            </p>
+    <div className="grid grid-cols-2 gap-5 mb-10 lg:grid-cols-4">
 
-            <h2 className="text-4xl font-black mt-2">
-              {totalMenus}
-            </h2>
-          </div>
+      <div className="p-6 border rounded-3xl bg-[#141414] border-white/5">
+        <p className="text-sm text-gray-400">
+          Total Items
+        </p>
 
-          <div className="bg-[#181818] rounded-3xl p-6 border border-white/5">
-            <p className="text-gray-400 text-sm">
-              Available
-            </p>
+        <h2 className="mt-3 text-4xl font-black">
+          {totalMenus}
+        </h2>
+      </div>
 
-            <h2 className="text-4xl font-black mt-2 text-green-400">
-              {availableMenus}
-            </h2>
-          </div>
+      <div className="p-6 border rounded-3xl bg-[#141414] border-green-500/10">
+        <p className="text-sm text-gray-400">
+          Available
+        </p>
 
-          <div className="bg-[#181818] rounded-3xl p-6 border border-white/5">
-            <p className="text-gray-400 text-sm">
-              Subscription Meals
-            </p>
+        <h2 className="mt-3 text-4xl font-black text-green-400">
+          {availableMenus}
+        </h2>
+      </div>
 
-            <h2 className="text-4xl font-black mt-2 text-orange-400">
-              {subscriptionMenus}
-            </h2>
-          </div>
+      <div className="p-6 border rounded-3xl bg-[#141414] border-orange-500/10">
+        <p className="text-sm text-gray-400">
+          Subscription
+        </p>
 
-          <div className="bg-[#181818] rounded-3xl p-6 border border-white/5">
-            <p className="text-gray-400 text-sm">
-              Avg Calories
-            </p>
+        <h2 className="mt-3 text-4xl font-black text-orange-400">
+          {subscriptionMenus}
+        </h2>
+      </div>
 
-            <h2 className="text-4xl font-black mt-2">
-              {avgCalories}
-            </h2>
-          </div>
+      <div className="p-6 border rounded-3xl bg-[#141414] border-white/5">
+        <p className="text-sm text-gray-400">
+          Avg Calories
+        </p>
 
-        </div>
+        <h2 className="mt-3 text-4xl font-black">
+          {avgCalories}
+        </h2>
+      </div>
 
-        {/* SEARCH */}
+    </div>
 
-        <div className="flex flex-col lg:flex-row gap-4 mb-8">
+    {/* SEARCH + FILTERS */}
 
-          <input
-            type="text"
-            placeholder="Search menu items..."
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            className="flex-1 bg-[#181818] border border-white/5 rounded-2xl px-5 py-4 outline-none"
-          />
+    <div className="p-5 mb-10 border rounded-3xl bg-[#141414] border-white/5">
 
-        </div>
+      <input
+        type="text"
+        placeholder="🔍 Search menu items..."
+        value={search}
+        onChange={(e) =>
+          setSearch(e.target.value)
+        }
+        className="
+          w-full
+          px-5
+          py-4
+          bg-[#0d0d0d]
+          border
+          border-white/10
+          rounded-2xl
+          outline-none
+          focus:border-orange-500
+          transition
+        "
+      />
 
-        {/* FILTERS */}
+      <div className="flex flex-wrap gap-3 mt-5">
 
-        <div className="flex flex-wrap gap-3 mb-10">
+        {[
+          "all",
+          "veg",
+          "nonveg",
+          "subscription",
+          "available",
+          "unavailable",
+        ].map((item) => (
 
-          {[
-            "all",
-            "veg",
-            "nonveg",
-            "subscription",
-            "available",
-            "unavailable",
-          ].map((item) => (
-            <button
-              key={item}
-              onClick={() => setFilter(item)}
-              className={`px-5 py-2 rounded-full transition ${
+          <button
+            key={item}
+            onClick={() => setFilter(item)}
+            className={`
+              px-4 py-2
+              rounded-xl
+              text-sm
+              font-medium
+              transition-all
+              w-auto
+              ${
                 filter === item
-                  ? "bg-orange-500"
-                  : "bg-[#181818]"
-              }`}
-            >
-              {item}
-            </button>
-          ))}
+                  ? "bg-orange-500 text-white"
+                  : "bg-[#1b1b1b] text-gray-400 hover:text-white hover:bg-[#222]"
+              }
+            `}
+          >
+            {item}
+          </button>
 
-        </div>
+        ))}
 
+      </div>
+
+    </div>
         {/* LOADING */}
 
         {loading ? (
           <div className="flex justify-center py-32">
 
-            <div className="w-14 h-14 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="border-4 border-orange-500 rounded-full w-14 h-14 border-t-transparent animate-spin"></div>
 
           </div>
         ) : filteredMenus.length === 0 ? (
           <div className="bg-[#181818] rounded-3xl p-20 text-center">
 
-            <h2 className="text-3xl font-bold mb-4">
+            <h2 className="mb-4 text-3xl font-bold">
               No Menu Items Found
             </h2>
 
@@ -315,8 +325,16 @@ const Menus = () => {
 
               <div
                 key={menu._id}
-                className="bg-[#181818] rounded-3xl overflow-hidden border border-white/5 hover:border-orange-500/30 transition"
-              >
+className="
+bg-[#141414]
+border
+border-white/5
+hover:border-orange-500/20
+rounded-3xl
+transition-all
+hover:-translate-y-1
+overflow-hidden
+"              >
 
                 <div className="p-7">
 
@@ -324,7 +342,7 @@ const Menus = () => {
 
                     <div>
 
-                      <h2 className="text-2xl font-bold mb-2">
+                      <h2 className="mb-2 text-2xl font-bold">
                         {menu.name}
                       </h2>
 
@@ -348,7 +366,7 @@ const Menus = () => {
 
                   </div>
 
-                  <p className="text-gray-400 mt-4 line-clamp-2">
+                  <p className="mt-4 text-gray-400 line-clamp-2">
                     {menu.description}
                   </p>
 
@@ -357,13 +375,13 @@ const Menus = () => {
                   <div className="flex flex-wrap gap-2 mt-5">
 
                     {menu.isVeg && (
-                      <span className="bg-green-500/10 text-green-400 px-3 py-1 rounded-full text-xs">
+                      <span className="px-3 py-1 text-xs text-green-400 rounded-full bg-green-500/10">
                         Veg
                       </span>
                     )}
 
                     {menu.subscriptionEligible && (
-                      <span className="bg-orange-500/10 text-orange-400 px-3 py-1 rounded-full text-xs">
+                      <span className="px-3 py-1 text-xs text-orange-400 rounded-full bg-orange-500/10">
                         Subscription
                       </span>
                     )}
@@ -371,7 +389,7 @@ const Menus = () => {
                     {menu.dietType?.map((diet) => (
                       <span
                         key={diet}
-                        className="bg-white/5 px-3 py-1 rounded-full text-xs"
+                        className="px-3 py-1 text-xs rounded-full bg-white/5"
                       >
                         {diet}
                       </span>
@@ -381,8 +399,7 @@ const Menus = () => {
 
                   {/* NUTRITION */}
 
-                  <div className="grid grid-cols-4 gap-3 mt-6">
-
+<div className="grid grid-cols-2 gap-3 mt-6 md:grid-cols-4">
                     <div className="bg-[#202020] rounded-xl p-3">
                       <p className="text-xs text-gray-400">
                         Calories
@@ -427,7 +444,7 @@ const Menus = () => {
 
                   {/* PRICE */}
 
-                  <div className="mt-6 flex items-center gap-3">
+                  <div className="flex items-center gap-3 mt-6">
 
                     <h2 className="text-3xl font-black text-orange-400">
                       ₹{menu.price}
@@ -442,46 +459,52 @@ const Menus = () => {
                   </div>
 
                   {/* ACTIONS */}
+<div className="flex gap-3 mt-8">
 
-                  <div className="flex gap-3 mt-8">
+  <button
+    onClick={() =>
+      navigate(`/menu/edit/${menu._id}`)
+    }
+    className="flex-1 py-3 font-semibold text-white transition bg-orange-500 rounded-xl hover:bg-orange-600"
+  >
+    Edit
+  </button>
 
-                    <button
-                      onClick={() =>
-                        navigate(
-                          `/menu/edit/${menu._id}`
-                        )
-                      }
-                      className="flex-1 bg-orange-500 hover:bg-orange-600 py-3 rounded-xl font-semibold"
-                    >
-                      Edit
-                    </button>
+  <button
+    onClick={() =>
+      handleToggle(menu._id)
+    }
+    className={`flex-1 py-3 rounded-xl font-semibold text-white transition ${
+      menu.isAvailable
+        ? "bg-red-500 hover:bg-red-600"
+        : "bg-green-500 hover:bg-green-600"
+    }`}
+  >
+    {menu.isAvailable
+      ? "Disable"
+      : "Enable"}
+  </button>
 
-                    <button
-                      onClick={() =>
-                        handleToggle(menu._id)
-                      }
-                      className={`flex-1 py-3 rounded-xl font-semibold ${
-                        menu.isAvailable
-                          ? "bg-red-500 hover:bg-red-600"
-                          : "bg-green-500 hover:bg-green-600"
-                      }`}
-                    >
-                      {menu.isAvailable
-                        ? "Disable"
-                        : "Enable"}
-                    </button>
+  <button
+    onClick={() =>
+      handleDelete(menu._id)
+    }
+    className="
+      w-12
+      h-12
+      flex
+      items-center
+      justify-center
+      bg-[#252525]
+      hover:bg-red-500
+      rounded-xl
+      transition
+    "
+  >
+    🗑
+  </button>
 
-                    <button
-                      onClick={() =>
-                        handleDelete(menu._id)
-                      }
-                      className="px-5 bg-[#252525] hover:bg-red-500 rounded-xl"
-                    >
-                      🗑
-                    </button>
-
-                  </div>
-
+</div>
                 </div>
               </div>
             ))}

@@ -52,15 +52,11 @@ const CreateMenu = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } =
-      e.target;
+    const { name, value, type, checked } = e.target;
 
     setForm((prev) => ({
       ...prev,
-      [name]:
-        type === "checkbox"
-          ? checked
-          : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -68,9 +64,7 @@ const CreateMenu = () => {
     setForm((prev) => ({
       ...prev,
       dietType: prev.dietType.includes(diet)
-        ? prev.dietType.filter(
-            (d) => d !== diet
-          )
+        ? prev.dietType.filter((d) => d !== diet)
         : [...prev.dietType, diet],
     }));
   };
@@ -84,18 +78,13 @@ const CreateMenu = () => {
     try {
       await createMenu(form);
 
-      setSuccess(
-        "Menu item created successfully 🎉"
-      );
+      setSuccess("Menu item created successfully 🎉");
 
       setTimeout(() => {
-        navigate("/menus");
+        navigate(`/branches/${form.branch}/menus`);
       }, 1500);
     } catch (error) {
-      setError(
-        error.response?.data?.message ||
-          "Failed to create menu item"
-      );
+      setError(error.response?.data?.message || "Failed to create menu item");
     } finally {
       setLoading(false);
     }
@@ -113,28 +102,20 @@ const CreateMenu = () => {
 
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-white">
-
       {/* Hero */}
       <div className="bg-gradient-to-r from-orange-500 to-orange-700">
-
         <div className="px-6 py-20 mx-auto max-w-7xl">
-
-          <h1 className="mb-4 text-5xl font-black">
-            Create Menu Item
-          </h1>
+          <h1 className="mb-4 text-5xl font-black">Create Menu Item</h1>
 
           <p className="text-lg text-orange-100">
             Add food items to your branch menu
           </p>
-
         </div>
       </div>
 
       {/* Form */}
       <div className="max-w-5xl px-6 py-10 mx-auto">
-
         <div className="bg-[#181818] rounded-3xl p-8 border border-white/5">
-
           {error && (
             <div className="p-4 mb-6 text-red-400 border bg-red-500/10 border-red-500/30 rounded-xl">
               {error}
@@ -151,13 +132,9 @@ const CreateMenu = () => {
             onSubmit={handleSubmit}
             className="grid grid-cols-1 gap-6 md:grid-cols-2"
           >
-
             {/* Branch */}
             <div className="md:col-span-2">
-
-              <label className="block mb-2 text-gray-400">
-                Branch
-              </label>
+              <label className="block mb-2 text-gray-400">Branch</label>
 
               <select
                 name="branch"
@@ -166,28 +143,19 @@ const CreateMenu = () => {
                 className="input"
                 required
               >
-                <option value="">
-                  Select Branch
-                </option>
+                <option value="">Select Branch</option>
 
                 {branches.map((branch) => (
-                  <option
-                    key={branch._id}
-                    value={branch._id}
-                  >
+                  <option key={branch._id} value={branch._id}>
                     {branch.name}
                   </option>
                 ))}
               </select>
-
             </div>
 
             {/* Name */}
             <div>
-
-              <label className="block mb-2 text-gray-400">
-                Food Name
-              </label>
+              <label className="block mb-2 text-gray-400">Food Name</label>
 
               <input
                 type="text"
@@ -197,15 +165,11 @@ const CreateMenu = () => {
                 className="input"
                 required
               />
-
             </div>
 
             {/* Category */}
             <div>
-
-              <label className="block mb-2 text-gray-400">
-                Category
-              </label>
+              <label className="block mb-2 text-gray-400">Category</label>
 
               <select
                 name="category"
@@ -220,15 +184,11 @@ const CreateMenu = () => {
                 <option>Dessert</option>
                 <option>Beverages</option>
               </select>
-
             </div>
 
             {/* Description */}
             <div className="md:col-span-2">
-
-              <label className="block mb-2 text-gray-400">
-                Description
-              </label>
+              <label className="block mb-2 text-gray-400">Description</label>
 
               <textarea
                 rows={4}
@@ -237,15 +197,11 @@ const CreateMenu = () => {
                 onChange={handleChange}
                 className="resize-none input"
               />
-
             </div>
 
             {/* Pricing */}
             <div>
-
-              <label className="block mb-2 text-gray-400">
-                Price
-              </label>
+              <label className="block mb-2 text-gray-400">Price</label>
 
               <input
                 type="number"
@@ -255,14 +211,10 @@ const CreateMenu = () => {
                 className="input"
                 required
               />
-
             </div>
 
             <div>
-
-              <label className="block mb-2 text-gray-400">
-                Discount Price
-              </label>
+              <label className="block mb-2 text-gray-400">Discount Price</label>
 
               <input
                 type="number"
@@ -271,15 +223,11 @@ const CreateMenu = () => {
                 onChange={handleChange}
                 className="input"
               />
-
             </div>
 
             {/* Nutrition */}
             <div>
-
-              <label className="block mb-2 text-gray-400">
-                Calories
-              </label>
+              <label className="block mb-2 text-gray-400">Calories</label>
 
               <input
                 type="number"
@@ -288,14 +236,10 @@ const CreateMenu = () => {
                 onChange={handleChange}
                 className="input"
               />
-
             </div>
 
             <div>
-
-              <label className="block mb-2 text-gray-400">
-                Protein (g)
-              </label>
+              <label className="block mb-2 text-gray-400">Protein (g)</label>
 
               <input
                 type="number"
@@ -304,14 +248,10 @@ const CreateMenu = () => {
                 onChange={handleChange}
                 className="input"
               />
-
             </div>
 
             <div>
-
-              <label className="block mb-2 text-gray-400">
-                Carbs (g)
-              </label>
+              <label className="block mb-2 text-gray-400">Carbs (g)</label>
 
               <input
                 type="number"
@@ -320,14 +260,10 @@ const CreateMenu = () => {
                 onChange={handleChange}
                 className="input"
               />
-
             </div>
 
             <div>
-
-              <label className="block mb-2 text-gray-400">
-                Fat (g)
-              </label>
+              <label className="block mb-2 text-gray-400">Fat (g)</label>
 
               <input
                 type="number"
@@ -336,29 +272,20 @@ const CreateMenu = () => {
                 onChange={handleChange}
                 className="input"
               />
-
             </div>
 
             {/* Diet Types */}
             <div className="md:col-span-2">
-
-              <label className="block mb-3 text-gray-400">
-                Diet Tags
-              </label>
+              <label className="block mb-3 text-gray-400">Diet Tags</label>
 
               <div className="flex flex-wrap gap-3">
-
                 {diets.map((diet) => (
                   <button
                     key={diet}
                     type="button"
-                    onClick={() =>
-                      handleDietChange(diet)
-                    }
+                    onClick={() => handleDietChange(diet)}
                     className={`px-4 py-2 rounded-full border transition ${
-                      form.dietType.includes(
-                        diet
-                      )
+                      form.dietType.includes(diet)
                         ? "bg-orange-500 border-orange-500"
                         : "border-white/10 bg-[#202020]"
                     }`}
@@ -366,14 +293,11 @@ const CreateMenu = () => {
                     {diet}
                   </button>
                 ))}
-
               </div>
-
             </div>
 
             {/* Toggles */}
             <div className="flex items-center gap-3">
-
               <input
                 type="checkbox"
                 name="isVeg"
@@ -382,41 +306,29 @@ const CreateMenu = () => {
               />
 
               <span>Vegetarian</span>
-
             </div>
 
             <div className="flex items-center gap-3">
-
               <input
                 type="checkbox"
                 name="subscriptionEligible"
-                checked={
-                  form.subscriptionEligible
-                }
+                checked={form.subscriptionEligible}
                 onChange={handleChange}
               />
 
-              <span>
-                Subscription Eligible
-              </span>
-
+              <span>Subscription Eligible</span>
             </div>
 
             {/* Submit */}
             <div className="mt-4 md:col-span-2">
-
               <button
                 type="submit"
                 disabled={loading}
                 className="w-full py-4 text-lg font-bold transition bg-orange-500 hover:bg-orange-600 rounded-2xl"
               >
-                {loading
-                  ? "Creating..."
-                  : "Create Menu Item"}
+                {loading ? "Creating..." : "Create Menu Item"}
               </button>
-
             </div>
-
           </form>
         </div>
       </div>

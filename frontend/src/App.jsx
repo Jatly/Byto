@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 import Signup from "./pages/auth/Signup";
 import Login from "./pages/auth/Login";
 import VerifyOtp from "./pages/auth/VerifyOtp";
@@ -15,6 +15,7 @@ import JoinBrand from "./pages/brand/JoinBrand";
 import CreateMenu from "./pages/menu/CreateMenu";
 import Menus from "./pages/menu/Menus";
 
+
 // 🔐 Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -23,6 +24,7 @@ const ProtectedRoute = ({ children }) => {
 };
 
 const App = () => {
+
   return (
     <BrowserRouter>
       <Routes>
@@ -50,7 +52,7 @@ const App = () => {
          <Route path="/branches" element={<ProtectedRoute><Branches /></ProtectedRoute>}/>
          <Route path="/join-brand" element={<ProtectedRoute><JoinBrand /></ProtectedRoute>}/>
          <Route path="/create-menu" element={<ProtectedRoute><CreateMenu /></ProtectedRoute>}/>
-         <Route path="/menus" element={<ProtectedRoute><Menus /></ProtectedRoute>}/>
+         <Route   path="/branches/:branchId/menus" element={<ProtectedRoute><Menus /></ProtectedRoute>}/>
 
          
          
