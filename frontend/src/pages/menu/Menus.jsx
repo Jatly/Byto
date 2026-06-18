@@ -353,16 +353,24 @@ overflow-hidden
                     </div>
 
                     <div
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        menu.isAvailable
-                          ? "bg-green-500/10 text-green-400"
-                          : "bg-red-500/10 text-red-400"
-                      }`}
-                    >
-                      {menu.isAvailable
-                        ? "Available"
-                        : "Unavailable"}
-                    </div>
+  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border ${
+    menu.isAvailable
+      ? "bg-green-500/10 text-green-400 border-green-500/20"
+      : "bg-red-500/10 text-red-400 border-red-500/20"
+  }`}
+>
+  <span
+    className={`w-2 h-2 rounded-full ${
+      menu.isAvailable
+        ? "bg-green-400"
+        : "bg-red-400"
+    }`}
+  ></span>
+
+  {menu.isAvailable
+    ? "Available"
+    : "Unavailable"}
+</div>
 
                   </div>
 
