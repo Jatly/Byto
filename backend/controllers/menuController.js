@@ -7,7 +7,6 @@ import Branch from "../models/Branch.js";
 
 export const createMenu = async (req, res) => {
   try {
-
     const {
       branch,
       name,
@@ -63,12 +62,10 @@ export const createMenu = async (req, res) => {
       .json({ success: true, message: "Menu item created successfully", menu });
   } catch (error) {
     console.error("Error creating menu item:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Server error while creating menu item",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Server error while creating menu item",
+    });
   }
 };
 
@@ -85,12 +82,10 @@ export const getBranchMenus = async (req, res) => {
     res.json({ success: true, menus, count: menus.length });
   } catch (error) {
     console.error("Error fetching branch menus:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Server error while fetching branch menus",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching branch menus",
+    });
   }
 };
 
@@ -99,10 +94,9 @@ export const getBranchMenus = async (req, res) => {
 // =====================================
 export const getMenuById = async (req, res) => {
   try {
-    const menu = await Menu.findById(req.params.id).populate(
-      "brand",
-      "name address",
-    ).populate("branch", "name address");;
+    const menu = await Menu.findById(req.params.id)
+      .populate("brand", "name address")
+      .populate("branch", "name address");
     if (!menu || menu.isDeleted) {
       return res
         .status(404)
@@ -132,12 +126,10 @@ export const updateMenu = async (req, res) => {
     // Ownership Check
     const branch = await Branch.findById(menu.branch);
     if (branch.owner.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Unauthorized to update this menu item",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized to update this menu item",
+      });
     }
     // Update fields
     Object.assign(menu, req.body);
@@ -149,12 +141,10 @@ export const updateMenu = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating menu item:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Server error while updating menu item",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating menu item",
+    });
   }
 };
 // =====================================
@@ -172,12 +162,10 @@ export const deleteMenu = async (req, res) => {
     // Ownership Check
     const branch = await Branch.findById(menu.branch);
     if (branch.owner.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Unauthorized to delete this menu item",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized to delete this menu item",
+      });
     }
     //soft delete
     menu.isDeleted = true;
@@ -185,12 +173,10 @@ export const deleteMenu = async (req, res) => {
     res.json({ success: true, message: "Menu item deleted successfully" });
   } catch (error) {
     console.error("Error deleting menu item:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Server error while deleting menu item",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Server error while deleting menu item",
+    });
   }
 };
 
@@ -209,12 +195,10 @@ export const toggleMenuAvailability = async (req, res) => {
     // Ownership Check
     const branch = await Branch.findById(menu.branch);
     if (branch.owner.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Unauthorized to update this menu item",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized to update this menu item",
+      });
     }
     menu.isAvailable = !menu.isAvailable;
     await menu.save();
@@ -225,11 +209,51 @@ export const toggleMenuAvailability = async (req, res) => {
     });
   } catch (error) {
     console.error("Error toggling menu availability:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating menu item availability",
+    });
+  }
+};
+
+// Customers controllers
+
+export const getHomeMenus = async (req, res) => {
+  try {
+    const popular = await Menu.find({
+      isDeleted: false,
+      isAvailable: true,
+    })
+      .sort({ rating: -1 })
+      .limit(8);
+
+    const healthy = await Menu.find({
+      isAvailable: true,
+      isDeleted: false,
+      dietType: { $in: ["Low Carb", "High Protein", "Low Fat"] },
+    })
+      .sort({ rating: -1 })
+      .limit(8);
+
+    const subscriptionMeals = await Menu.find({
+      subscriptionEligible: true,
+      isAvailable: true,
+      isDeleted: false,
+    }).limit(8);
+
+    res.json({
+      success: true,
+      popular,
+      healthy,
+      subscriptionMeals,
+    });
+  } catch (error) {
+    console.error("Error fetching home menus:", error);
     res
       .status(500)
       .json({
         success: false,
-        message: "Server error while updating menu item availability",
+        message: "Server error while fetching home menus",
       });
   }
 };
