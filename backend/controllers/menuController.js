@@ -257,3 +257,28 @@ export const getHomeMenus = async (req, res) => {
       });
   }
 };
+
+export const getMenusByCategory =
+  async (req, res) => {
+    try {
+
+      const menus =
+        await Menu.find({
+          category:
+            req.params.category,
+          isAvailable: true,
+          isDeleted: false,
+        });
+
+      res.json({
+        success: true,
+        menus,
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message: error.message,
+      });
+    }
+  };
