@@ -282,3 +282,48 @@ export const getMenusByCategory =
       });
     }
   };
+
+  export const searchMenus =
+  async (req, res) => {
+    try {
+
+      const { q } = req.query;
+
+      const menus =
+        await Menu.find({
+          isAvailable: true,
+          isDeleted: false,
+          $or: [
+            {
+              name: {
+                $regex: q,
+                $options: "i",
+              },
+            },
+            {
+              description: {
+                $regex: q,
+                $options: "i",
+              },
+            },
+            {
+              category: {
+                $regex: q,
+                $options: "i",
+              },
+            },
+          ],
+        });
+
+      res.json({
+        success: true,
+        menus,
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message: error.message,
+      });
+    }
+  };
