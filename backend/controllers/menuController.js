@@ -327,3 +327,43 @@ export const getMenusByCategory =
       });
     }
   };
+
+  export const getRelatedMenus =
+  async (req, res) => {
+    try {
+
+      const menu =
+        await Menu.findById(
+          req.params.id
+        );
+
+      if (!menu) {
+        return res.status(404).json({
+          message:
+            "Menu not found",
+        });
+      }
+
+      const related =
+        await Menu.find({
+          _id: {
+            $ne: menu._id,
+          },
+          category:
+            menu.category,
+          isAvailable: true,
+          isDeleted: false,
+        }).limit(4);
+
+      res.json({
+        success: true,
+        related,
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message: error.message,
+      });
+    }
+  };
