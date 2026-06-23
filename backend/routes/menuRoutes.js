@@ -5,45 +5,96 @@ import {
   getBranchMenus,
   getMenuById,
   updateMenu,
-  toggleMenuAvailability,
   deleteMenu,
+  toggleMenuAvailability,
+
+  getHomeMenus,
+  searchMenus,
+  getMenusByCategory,
+  getRelatedMenus,
 } from "../controllers/menuController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
-
 import { authorize } from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
+
 // =====================================
-// PUBLIC ROUTES
+// 👤 CUSTOMER ROUTES
 // =====================================
 
-// Get Menus of Branch
-router.get("/branch/:branchId", getBranchMenus);
+// Home Feed
+router.get(
+  "/home",
+  getHomeMenus
+);
+
+// Search Menus
+router.get(
+  "/search",
+  searchMenus
+);
+
+// Menus By Category
+router.get(
+  "/category/:category",
+  getMenusByCategory
+);
+
+// Related Menus
+router.get(
+  "/related/:id",
+  getRelatedMenus
+);
+
+// Get Branch Menus
+router.get(
+  "/branch/:branchId",
+  getBranchMenus
+);
 
 // Get Single Menu
-router.get("/:id", getMenuById);
+router.get(
+  "/:id",
+  getMenuById
+);
+
 
 // =====================================
-// BRANCH ROUTES
+// 🏢 BRANCH ROUTES
 // =====================================
 
 // Create Menu
-router.post("/create", protect, authorize("branch"), createMenu);
+router.post(
+  "/create",
+  protect,
+  authorize("branch"),
+  createMenu
+);
 
-//  Update Menu
-router.put("/:id", protect, authorize("branch"), updateMenu);
+// Update Menu
+router.put(
+  "/:id",
+  protect,
+  authorize("branch"),
+  updateMenu
+);
 
 // Toggle Availability
 router.patch(
   "/:id/toggle",
   protect,
   authorize("branch"),
-  toggleMenuAvailability,
+  toggleMenuAvailability
 );
 
 // Delete Menu
-router.delete("/:id", protect, authorize("branch"), deleteMenu);
+router.delete(
+  "/:id",
+  protect,
+  authorize("branch"),
+  deleteMenu
+);
 
 export default router;

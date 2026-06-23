@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 // =====================================
 // AXIOS INSTANCE
 // =====================================
@@ -8,47 +7,69 @@ import axios from "axios";
 const API = axios.create({
   baseURL: "http://localhost:5000/api/menus",
   withCredentials: true,
-}); 
-//======================================
+});
+
+// =====================================
 // ATTACH JWT TOKEN
 // =====================================
 
 API.interceptors.request.use((req) => {
-
-  const token =
-    localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   if (token) {
-    req.headers.Authorization =
-      `Bearer ${token}`;
+    req.headers.Authorization = `Bearer ${token}`;
   }
 
   return req;
 });
 
-
 // =====================================
-// MENU APIs
+// CUSTOMER APIs
 // =====================================
 
+// Home Feed
+export const getHomeMenus = () =>
+  API.get("/home");
 
-// Create Menu
-export const createMenu = (data) =>
-  API.post("/create", data);
+// Search Menus
+export const searchMenus = (query) =>
+  API.get(`/search?q=${query}`);
 
+// Menus By Category
+export const getMenusByCategory = (
+  category
+) =>
+  API.get(
+    `/category/${category}`
+  );
 
-// Get Branch Menus
-export const getBranchMenus = (branchId) => {
-  console.log("Branch ID:", branchId);
-
-  return API.get(`/branch/${branchId}`);
-};
-
+// Related Menus
+export const getRelatedMenus = (
+  menuId
+) =>
+  API.get(
+    `/related/${menuId}`
+  );
 
 // Get Single Menu
 export const getMenuById = (id) =>
   API.get(`/${id}`);
 
+// Get Branch Menus
+export const getBranchMenus = (
+  branchId
+) =>
+  API.get(
+    `/branch/${branchId}`
+  );
+
+// =====================================
+// BRANCH DASHBOARD APIs
+// =====================================
+
+// Create Menu
+export const createMenu = (data) =>
+  API.post("/create", data);
 
 // Update Menu
 export const updateMenu = (
@@ -57,13 +78,11 @@ export const updateMenu = (
 ) =>
   API.put(`/${id}`, data);
 
-
-// Toggle Menu Availability
+// Toggle Availability
 export const toggleMenuAvailability = (
   id
 ) =>
   API.patch(`/${id}/toggle`);
-
 
 // Delete Menu
 export const deleteMenu = (id) =>
